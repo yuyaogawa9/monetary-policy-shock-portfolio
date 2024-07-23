@@ -1,6 +1,6 @@
 
 ##################################################################### 
-# R code: Portfolio Reactions to Monetary Policy Shocks - Sectoral Heterogeneity
+# R code: Heterogeneous Portfolio Reactions to Monetary Policy Shocks
 # Author: Yuya Ogawa
 ####################################################################
 
