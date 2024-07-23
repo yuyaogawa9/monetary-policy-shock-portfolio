@@ -15,7 +15,7 @@ library(tidyquant)
 
 # ================= Load Shock data ====================
 # Set working directory here
-setwd('/Users/yuyaogawa/Documents/Home Work/portfolio/MonPol/local_projection/practice2')
+setwd('Set up your working directory here')
 
 # This data contains the monetary policy shock using Romer and Romer method
 temp <- read_excel("Monetarydat.xlsx", sheet = "Monthly")
