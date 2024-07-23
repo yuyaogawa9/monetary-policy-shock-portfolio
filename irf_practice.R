@@ -96,7 +96,7 @@ plot_irf <- function(sector) {
   # Convert to time series
   ts <- ts(ts_sectr, start = c(1998, 12), frequency = 12)
   # Fit the VAR model
-  var_model <- VAR(ts, p = 6, type = "const")
+  var_model <- vars::VAR(ts, p = 6, type = "const")
   # Calculate impulse response function
   irf_model <- irf(var_model, impulse = "BCSHOCK", response = sector, n.ahead = 24)
   plot(irf_model)
@@ -118,7 +118,7 @@ ts_all <- as.data.frame(ts_analysis) %>%
 
 ts <- ts(ts_all, start = c(1998, 12), frequency = 12)
 
-var_model <- VAR(ts, p = 6, type = "const")
+var_model <- vars::VAR(ts, p = 6, type = "const")
 
 irf_model <- irf(var_model, impulse = "BCSHOCK", n.ahead = 24)
 
