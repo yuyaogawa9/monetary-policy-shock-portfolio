@@ -59,8 +59,6 @@ ptflo_pd <- ptflo %>%
 
 # Time series data
 ts_data <- right_join(temp, ptflo_pd, by = "date")
-
-# Panel data
 pn_data <- right_join(temp, ptflo, by = "date")
 
 # ==================== Analysis ==============================
@@ -78,19 +76,21 @@ ts_analysis <- ts_data %>%
   as_tsibble(index=date) %>% 
   filter_index('1998 Jan' ~ '2008 Jun')
 
-ts_analysis <- ts_analysis %>% 
+
+### ------- Run VARs separately ------- 
+
+ts_analysis_diff <- ts_analysis %>% 
   mutate(across(c("Energy", "Financial", 
                   "Healthcare", "Industrial",
                   "Materials", "Utilities", 
                   "Technology", "SP500",
-                  "FFR", "LPCOM"), ~ difference(log(.)))) %>% mutate(infl = difference(LCPI), BCSHOCK = BCSHOCK/100)
-
-### ------- Run VARs separately ------- 
+                  "FFR", "LPCOM"), ~ difference(log(.)))) %>% 
+  mutate(infl = difference(LCPI), BCSHOCK = BCSHOCK/100)
 
 # Create a function
 plot_irf <- function(sector) {
   # Filter and prepare the data
-  ts_sectr <- as.data.frame(ts_analysis) %>%
+  ts_sectr <- as.data.frame(ts_analysis_diff) %>%
     dplyr::select(all_of(sector), SP500, FFR, BCSHOCK) %>%
     drop_na()
   # Convert to time series
@@ -109,7 +109,7 @@ sectors <- c("Energy", "Financial", "Healthcare", "Industrial",
 lapply(sectors, plot_irf)
 
 ### ------- Run VAR all together ------- 
-ts_all <- as.data.frame(ts_analysis) %>% 
+ts_all <- as.data.frame(ts_analysis_diff) %>% 
   dplyr::select(Energy, Financial, 
                 Healthcare, Industrial, 
                 Materials, Utilities, 
@@ -128,6 +128,8 @@ plot(irf_model)
 
 #### Local Projection #### 
 
+
+
 plot_irf2 <- function(sector) {
   ts_sectr <- as.data.frame(ts_analysis) %>%
     dplyr::select(all_of(sector), SP500, FFR, BCSHOCK) %>%
@@ -135,7 +137,7 @@ plot_irf2 <- function(sector) {
   
   results_lin <- 
     lp_lin(ts_sectr,
-           lags_endog_lin = 12,
+           lags_endog_lin = 6,
            trend = 0,
            shock_type =1,
            confint = 1.96,
@@ -147,6 +149,5 @@ sectors <- c("Energy", "Financial", "Healthcare", "Industrial",
              "Materials", "Utilities", "Technology")
 
 lapply(sectors, plot_irf2)
-
 
 
