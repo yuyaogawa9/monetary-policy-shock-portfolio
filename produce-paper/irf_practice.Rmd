@@ -18,8 +18,11 @@ Before proceeding to a formal analysis, I review the concept of VAR and Local Pr
 ### Brief Introduction of VAR
 
 Suppose you have a vector of variables that follow the AR(1) process: $$
-v_t = \begin{bmatrix} v_{1t}\\v_{2t}\\:\\\end{bmatrix} = \begin{bmatrix} a_{11} & a_{12} &...\\a_{21} & a_{22} & ...\\: &: & .\\\end{bmatrix} \begin{bmatrix} v_{1t-1}\\v_{2t-1}\\:\\\end{bmatrix} + \begin{bmatrix} \epsilon _{1t}\\\epsilon_{2t}\\:\\\end{bmatrix} =Av_{t-1} + \epsilon_{t}
-$$ This representation assumes that the variables $(v_{it})_i$ depend on each other with a lag and is called VAR(1) process. Let $L$ be a lag operator such that $v_t=Lv_t=v_{t-1}$, and if $(I-AL)$ is indeed invertible (or if the spectral radius of $AL$, $\rho(A)$, is less than 1), the above equation has a following representation. $$ v_t = (I-AL)^{-1}\epsilon_t$$ This shows that one can represent $v_t$ as a function of impulse response. Under the same assumption, one can also indeed show that $$ (I-AL)^{-1} = \sum_{t=0}^\infty (AL)^t$$ which shows that VAR(1) has MA($\infty$) representation. This formation makes the calculation of impulse response fairly intuitive.\
+v_t = \begin{bmatrix} v_{1t}\\v_{2t}\\:\\\end{bmatrix} = \begin{bmatrix} a_{11} & a_{12} &...\\a_{21} & a_{22} & ...\\: &: & .\\\end{bmatrix} \begin{bmatrix} v_{1t-1}\\v_{2t-1}\\:\\\end{bmatrix} + \begin{bmatrix} \epsilon _{1t}\\\epsilon_{2t}\\:\\\end{bmatrix} =Av_{t-1} + \epsilon_{t}$$ where $\epsilon_t \sim \mathcal{N}(0,\,\Sigma)$. This representation assumes that the variables $(v_{it})_i$ depend on each other with a lag and is called VAR(1) process. Let $L$ be a lag operator such that $v_t=Lv_t=v_{t-1}$, and if $(I-AL)$ is indeed invertible (or if the spectral radius of $AL$, $\rho(A)$, is less than 1), the above equation has a following representation. $$ v_t = (I-AL)^{-1}\epsilon_t$$ This shows that one can represent $v_t$ as a function of impulse response. Under the same assumption, one can also indeed show that $$ (I-AL)^{-1} = \sum_{t=0}^\infty (AL)^t$$ which shows that VAR(1) has MA($\infty$) representation. We then have
+$$ v_t =  \sum_{t=0}^\infty A^t\epsilon_0 $$
+
+We have expressed $v_t$ as a response to an initial shock. This formation makes the calculation of impulse response fairly intuitive.\
+
 As an example, suppose that we believe GDP growth, unemployment rate, and inflation follows VAR(1) process. Then we can represent it in the following form: $$ \text{GDPgr}_t = \theta_{11}\text{unemp}_{t-1} + \theta_{12} \text{inf}_{t-1} + \theta_{13}\text{GDPgr}_{t-1} + \epsilon_{1t}$$ $$\text{unemp}_t = \theta_{21}\text{unemp}_{t-1} + \theta_{22} \text{inf}_{t-1} + \theta_{23}\text{GDPgr}_{t-1} + \epsilon_{2t} $$ $$\text{inf}_t = \theta_{31}\text{unemp}_{t-1} + \theta_{32} \text{inf}_{t-1} + \theta_{33}\text{GDPgr}_{t-1} + \epsilon_{3t}$$ The impulse response of VAR(p) (although a meaningful interpretation requires orthogonalized shocks) can be calculated by expressing the vector in MA($\infty$) form.
 
 ### Local Projection
@@ -72,8 +75,8 @@ Above shows the impulse response of each portfolio when I run VAR separately. Th
 
 ![Impulse Response of Portfolio (Jointly Estimated)](Rplot07.png)
 
-As you can see, in the first three month, all of the portfolio initially goes up as a response to an exogenous shock in the monetary policy, followed by a sharp decline. Then, it moves upward and exhibits a slow decline with increasingly lower amplitude. However, the magnitude of the volatility for each portfolio is different. Note that Technology, Energy, and Financial exhibits higher and more persistent volatility than other portfolios. 
-Now let us compare the impulse response from VAR to that calculated by local projection method. Below shows the IRF from local projection method. 
+In the initial three months, all portfolios experience an increase in response to an exogenous monetary policy shock, followed by a sharp decline. Subsequently, each portfolio trends upward but with a progressively slower decline and decreasing amplitude. It is important to note that the degree of volatility varies across portfolios. Specifically, the Technology, Energy, and Financial portfolios display higher and more persistent volatility compared to others.\
+Next, let's compare the impulse response functions (IRFs) obtained from the VAR model with those derived using the local projection method. Below, we present the IRFs from the local projection method.
 \
 
 ```{r echo=FALSE, message=FALSE}
@@ -94,8 +97,16 @@ grid.arrange(rasterGrob(readPNG("Rplot.png")), ncol=2)
 ```
 
 
-IRF from local projection method shows somewhat a different reaction. Energy and technology exhibits the highest volatility. Another difference of local projection IRFs from those estimated by VARs is its general behavior. For instance, all of the portfolio showed a similar pattern - initial increase followed by a sharp decline, which again was followed by an increase by smaller in magnitude. However, IRFs from local projection hints the existence of heterogeneous responses to a monetary policy shock. For instance, healthcare portfolio reacts negatively to a positive unit monetary policy shock, whereas materials, utilities, financial, and energy shows positive response. On the other hand, technology and industrial portfolios show initial increase until 12th month and gradually declines into negative return. 
-The risk implication of this result is fairly simple. After 12 month into a positive shock in rate change, reduce the holding of technology and industrial stocks and increase the holding of either financial, energy, or materials stocks. 
+The impulse response functions (IRFs) from the local projection method reveal some notable differences from those estimated by VAR models. In particular, the Energy and Technology portfolios exhibit the highest volatility. Unlike the VAR estimates, which generally show a consistent pattern of an initial increase followed by a sharp decline and then a smaller rebound, the local projection IRFs suggest more varied responses to monetary policy shocks.\
+For example, the Healthcare portfolio responds negatively to a positive monetary policy shock, while the Materials, Utilities, Financial, and Energy portfolios show positive responses. In contrast, the Technology and Industrial portfolios initially increase for up to 12 months before gradually declining into negative returns.\
+From a risk management perspective, the implication is straightforward: after 12 months following a positive rate change shock, it may be prudent to reduce holdings in Technology and Industrial stocks and increase holdings in Financial, Energy, or Materials stocks.
+
+
+
+
+
+
+
 
 
 
